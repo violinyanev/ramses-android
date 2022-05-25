@@ -147,6 +147,7 @@ afterEvaluate {
         }
     }
     signing {
+        required { gradle.taskGraph.hasTask("publish") }
         sign publishing.publications.ramses_release
     }
 }
