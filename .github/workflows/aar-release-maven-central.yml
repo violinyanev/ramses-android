@@ -26,8 +26,8 @@ jobs:
       
     - name: Publish Library
       run: |
-        ./gradlew publish --no-daemon --no-parallel
-        ./gradlew closeAndReleaseRepository
+        ./android/gradlew -p ./android :ramses-aar:publish --no-daemon --no-parallel
+        ./android/gradlew -p ./android :ramses-aar:closeAndReleaseRepository
       env:
         ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
         ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
