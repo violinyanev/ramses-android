@@ -133,8 +133,8 @@ afterEvaluate {
                     }
                     developers {
                         developer {
-                            id = ramses_maintainers
-                            name = Ramses Maintainers
+                            id = "ramses_maintainers"
+                            name = "Ramses Maintainers"
                         }
                     }
                 }

@@ -24,9 +24,14 @@ jobs:
     - name: Execute Gradle build
       run: ./android/gradlew -p ./android :ramses-aar:build
       
+    - name: Decode
+      run: |
+        echo "${{secrets.OSSRH_GPG_SECRET_KEY}}" > ~/.gradle/secring.gpg.b64
+        base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
+
     - name: Publish Library
       run: |
-        ./android/gradlew -p ./android :ramses-aar:publish --no-daemon --no-parallel
+        ./android/gradlew -p ./android :ramses-aar:publish -Psigning.keyId=${{secrets.SIGNING_KEY_ID}} -Psigning.password=${{ secrets.OSSRH_PASSWORD }} -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.gpg) --no-daemon --no-parallel
         ./android/gradlew -p ./android closeAndReleaseRepository
       env:
         ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
