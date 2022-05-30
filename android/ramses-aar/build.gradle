@@ -131,6 +131,12 @@ afterEvaluate {
                         url = "http://mozilla.org/MPL/2.0/"
                         distribution = "repo"
                     }
+                    developers {
+                        developer {
+                            id = ramses_maintainers
+                            name = Ramses Maintainers
+                        }
+                    }
                 }
             }
         }
