@@ -2,8 +2,9 @@ name: Build and publish AAR to Maven Central
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   gradle:
@@ -24,7 +25,7 @@ jobs:
     - name: Prepare GPG key
       run: |
         cd ${{runner.workspace}}/ramses-android/android/ramses-aar
-        echo "${{secrets.OSSRH_GPG_SECRET_KEY}}" > secring.gpg.b64
+        echo "${{secrets.GPG_KEY_B64}}" > secring.gpg.b64
         base64 -d secring.gpg.b64 > secring.gpg
 
     - name: Execute Gradle build
@@ -32,10 +33,13 @@ jobs:
 
     - name: Publish Library
       run: |
+        set -x
+        ls .
         echo "Publishing aar package..."
-        ./android/gradlew -p ./android :ramses-aar:publish -Psigning.keyId=${{ secrets.SIGNING_KEY_ID }} -Psigning.password=${{ secrets.OSSRH_PASSWORD }} -Psigning.secretKeyRingFile=secring.gpg --no-daemon --no-parallel
+        ls ./android/ramses-aar
+        ./android/gradlew -p ./android :ramses-aar:publish -Psigning.keyId=${{ secrets.SIGNING_KEY_ID }} -Psigning.password=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} -Psigning.secretKeyRingFile=secring.gpg --no-daemon --no-parallel
         echo "Releasing aar package..."
-        ./android/gradlew -p ./android closeAndReleaseRepository
+        #./android/gradlew -p ./android closeAndReleaseRepository
       env:
         ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSSRH_USERNAME }}
         ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSSRH_PASSWORD }}
